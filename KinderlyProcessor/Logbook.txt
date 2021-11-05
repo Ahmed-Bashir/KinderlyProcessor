@@ -1,0 +1,289 @@
+https://stackoverflow.com/questions/21158298/how-to-force-webrequest-to-send-authorization-header-during-post
+https://stackoverflow.com/questions/47588531/error-message-cs5001-program-does-not-contain-a-static-main-method-suitable-f/47588563#47588563
+https://stackoverflow.com/questions/51017896/error-message-cs5001-program-does-not-contain-a-static-main-method-suitable-f
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/configure-language-version
+https://zetcode.com/csharp/httpclient/
+https://stackoverflow.com/questions/8846173/how-to-remove-first-and-last-character-of-a-string
+https://stackoverflow.com/questions/36893326/read-a-value-from-appsettings-json-in-1-0-0-rc1-final
+https://stackoverflow.com/questions/61955768/how-do-i-use-httpclientfactory-with-impersonation-or-find-another-way-to-get-a
+https://stackoverflow.com/questions/42205003/sending-a-bearer-token-to-endpoint-then-validate-this-token
+https://stackoverflow.com/questions/51358870/configure-httpclientfactory-to-use-data-from-the-current-request-context
+https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-5.0
+https://stackoverflow.com/questions/13839426/how-can-i-add-a-custom-root-node-when-serializing-an-object-with-json-net
+https://stackoverflow.com/questions/56096968/deserialize-httpclient-readasasync-results-into-a-list-of-objects
+https://stackoverflow.com/questions/17988431/retrieve-anonymous-type-from-the-web-in-c-sharp
+
+https://docs.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/authenticated-client-smtp-submission
+
+https://stackoverflow.com/questions/63989894/filestream-the-filename-directory-name-or-volume-label-syntax-is-incorrecty
+
+Use package manager instead of nuget manager 
+
+https://stackoverflow.com/questions/36893326/read-a-value-from-appsettings-json-in-1-0-0-rc1-final
+
+https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-5.0
+
+https://github.com/serilog/serilog-aspnetcore/issues/9
+https://stackoverflow.com/questions/45104616/nuget-doesnt-recognize-installed-packages
+
+https://www.blinkingcaret.com/2018/02/14/net-core-console-logging/
+
+https://stackoverflow.com/questions/15536830/linq-firstordefault-then-select
+https://stackoverflow.com/questions/42846296/how-to-load-appsetting-json-section-into-dictionary-in-net-core?answertab=active&newreg=dc470a157ae449c882882217c987402d
+
+https://stackoverflow.com/questions/5342375/regex-email-validation
+
+https://www.youtube.com/watch?v=cwgck1k0YKU&ab_channel=IAmTimCorey
+https://www.youtube.com/watch?v=y64L-3HKuP0&ab_channel=IAmTimCorey
+https://www.youtube.com/watch?v=GAOCe-2nXqc&t=1s&ab_channel=IAmTimCorey
+https://www.youtube.com/watch?v=_iryZxv8Rxw&t=145s&ab_channel=IAmTimCorey
+https://www.youtube.com/watch?v=qSeO9886nRM&t=2s&ab_channel=IAmTimCorey
+
+https://www.blinkingcaret.com/2018/02/14/net-core-console-logging/
+https://stackoverflow.com/questions/55474771/how-to-config-serilog-to-write-to-the-application-directory-with-the-cofig-fil
+
+https://stackoverflow.com/questions/50472009/generating-net-core-console-app-exe-in-visual-studio-2017/50472272
+
+
+
+   //public async Task<HttpClient> GetHttpClient()
+        //{
+
+
+
+        //    var client = new HttpClient();
+
+        //    var authToken = Encoding.ASCII.GetBytes($"{_appSettings.BluelightUserName}:{_appSettings.BluelightPassword}");
+
+        //    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
+        //            Convert.ToBase64String(authToken));
+
+
+        //    var result = await client.GetAsync(_appSettings.BluelightTokenUrl);
+
+        //    var Token = await result.Content.ReadAsStringAsync();
+        //    Token = Token.Substring(1, Token.Length - 2);
+
+        //    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",
+        //             Token);
+
+        //    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+
+        //    return client;
+
+        //}
+
+//public async Task<string> GetKinderly()
+        //{
+
+           
+
+        //    var client = new HttpClient();
+
+        //    var authToken = Encoding.ASCII.GetBytes($"{_appSettings.KinderlyUserName}:{_appSettings.KinderlyPassword}");
+
+        //    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
+        //            Convert.ToBase64String(authToken));
+
+        //    var body = "{\"data\": [] }";
+
+        //    var data = new StringContent(body, Encoding.UTF8, "application/json");
+        //    var response = await client.PostAsync(_appSettings.KinderlyApiUrl,data);
+
+        //    var content = response.Content.ReadAsStringAsync();
+
+        //    return content.ToString();
+        //}
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace KinderlyAndCRMServiceApp
+{
+    public class AppSettings
+    {
+        public string BluelightTokenUrl { get; set; }
+        public string BluelightApiUrl { get; set; }
+        public string BluelightUserName { get; set; }
+        public string BluelightPassword { get; set; }
+
+        public string KinderlyApiUrl { get; set; }
+        public string KinderlyUserName { get; set; }
+        public string KinderlyPassword { get; set; }
+    }
+}
+
+
+
+5486e716-1e8e-eb11-b1ac-0022481a6e58
+
+
+{
+ "Id": "5486e716-1e8e-eb11-b1ac-0022481a6e58",
+ "KinderlyIntegrationDate": "2021-04-06T10:30:00.000Z"
+}
+
+
+  //private void LogUnapprovedMembers(KinderlyMember kinderlyMember)
+        //{
+        //    var path = @"C:\Users\a.salad\Desktop\Log.txt";
+
+        //    using (StreamWriter writer = File.CreateText(path))
+        //    {
+
+        //        foreach (var member in kinderlyMember.data)
+        //        {
+
+        //            if (member.success == false)
+        //            {
+
+        //                writer.WriteLine(member.customer.first_name);
+
+        //            }
+
+
+
+        //    }
+
+
+        //    }
+
+        //}
+  var topshelfExitCode = HostFactory.Run(configure =>
+            {
+                configure.Service<Application>(x =>
+                {
+                    x.ConstructUsing(name => serviceProvider.GetService<Application>());
+                    x.WhenStarted(application => application.Start());
+                    x.WhenStopped(application => application.Stop());
+                });
+
+                configure.RunAsLocalSystem();
+                configure.SetDisplayName("KinderlyProcessor");
+                configure.SetServiceName("KinderlyProcessor");
+            });
+
+            var exitCode = (int)Convert.ChangeType(topshelfExitCode, topshelfExitCode.GetTypeCode());
+            Environment.ExitCode = exitCode;
+
+
+            //var from = new MailAddress("a.salad@pacey.org.uk");
+            //var message = new MailMessage()
+            //{
+            //    From = from,
+            //    Body = "blahblah"
+            //};
+
+            //message.To.Add("ahmed.salad@pacey.org.uk");
+
+            // "elena.bychkova@pacey.org.uk"
+
+        
+
+            //work\home ??
+            //
+Failed to compile generated Razor template:
+- (1:131) ; expected
+- (1:131) } expected
+- (1:180) ; expected
+- (1:180) } expected
+- (1:69) Only assignment, call, increment, decrement, and new object expressions can be used as a statement
+- (1:121) The type or namespace name 'First' could not be found (are you missing a using directive or an assembly reference?)
+- (1:133) Only assignment, call, increment, decrement, and new object expressions can be used as a statement
+- (1:171) The type or namespace name 'Last' could not be found (are you missing a using directive or an assembly reference?)
+- (1:176) A local variable or function named 'name' is already defined in this scope
+- (1:182) Only assignment, call, increment, decrement, and new object expressions can be used as a statement
+- (1:225) Only assignment, call, increment, decrement, and new object expressions can be used as a statement
+
+See CompilationErrors for detailed information
+
+   template.AppendLine("@foreach(var error in Model.message.postcode){ @error}");
+
+
+{
+            "email" : "tull.sull@hotmail.com",
+            "first_name": "AHMED",
+            "last_name" : "SALAD",
+            "order_summary": [
+                        {"urid" : "WCC1D", "order_ref_id" : "137075", "quantity": 1}
+            ]
+}
+
+  if (digitalContracts.Any())
+            {
+                foreach (var contract in digitalContracts)
+                {
+                    var data = new
+                    {
+                        contract.email,
+                        contract.first_name,
+                        contract.last_name,
+                        contract.order_summary
+                    };
+
+                    var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+                    var response = await client.PostAsync(DigitalContractEndpoint, content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        _logger.LogInformation("Customer with Email: {0} processed succesfully.", contract.email);
+
+                    }
+                    else
+                    {
+                        _logger.LogError("Customer with Email: {0} processed succesfully.", contract.email);
+                    }
+
+                    var viewcontent = response.Content.ReadAsStringAsync();
+
+                    await _bluelightApiService.PostInvoice(contract.invoice, contract.KinderlyIntegrationDate);
+                }
+
+
+
+
+  //if (digitalContracts.Any())
+            //{
+            //    foreach (var contract in digitalContracts)
+            //    {
+
+            List<OrderSummary> orderSummaries = new List<OrderSummary>()
+            {
+                 new OrderSummary()
+                {
+                    order_ref_id = "142895",
+                    quantity = 1,
+                    urid = "CC1D"
+                }
+            };
+            var data = new
+            {
+                email = "tull.sull@hotmail.com",
+                first_name = "Ahmed",
+                last_name = "Salad",
+                order_summary = orderSummaries
+
+            };
+
+            var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+            var response = await client.PostAsync(DigitalContractEndpoint, content);
+
+            //if (response.IsSuccessStatusCode)
+            //{
+            //    _logger.LogInformation("Customer with Email: {0} processed succesfully.");
+
+            //}
+            //else
+            //{
+            //    _logger.LogError("Customer with Email: {0} processed unsuccesfully.");
+            //}
+
+            var viewcontent = response.Content.ReadAsStringAsync();
+
+            // await _bluelightApiService.PostInvoice(contract.invoice, contract.KinderlyIntegrationDate);
+            //}
+
+
+C:\Users\a.salad\source\Workspaces\Search Childcare Kentico\branches\SC dev branch-V12\searchchildcare\searchchildcare.csproj
