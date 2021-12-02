@@ -16,69 +16,15 @@ namespace KinderlyProcessor
 {
     public class Program
     {
-        private readonly IKinderlyApiService _kinderlyApiService;
-        private readonly IBluelightApiService _bluelightApiService;
+        //private readonly IKinderlyApiService _kinderlyApiService;
+        //private readonly IBluelightApiService _bluelightApiService;
 
-        //private static void Main()
-        //{
-        //    Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
-
-        //    var services = ConfigureServices();
-        //    var serviceProvider = services.BuildServiceProvider();
-
-        //    var path = AppDomain.CurrentDomain.BaseDirectory + "KinderlyLog.txt";
-
-        //    Log.Logger = new LoggerConfiguration()
-        //        .Enrich.FromLogContext()
-        //        .WriteTo.Console()
-        //        .WriteTo.File(path)
-        //        .CreateLogger();
-
-        //    Log.Information("Application starting");
-
-        //    var topshelfExitCode = HostFactory.Run(configure =>
-        //    {
-        //        configure.Service<Application>(x =>
-        //        {
-        //            x.ConstructUsing(name => serviceProvider.GetService<Application>());
-
-        //            x.WhenStarted(application => application.Start());
-        //            x.WhenStopped(application => application.Stop());
-        //        });
-
-        //        configure.RunAsLocalSystem();
-        //        configure.SetDisplayName("KinderlyProcessor");
-        //        configure.SetServiceName("KinderlyProcessor");
-        //        configure.SetDescription("Provides Pacey members with Kinderdly");
-        //    });
-
-        //    var exitCode = (int)Convert.ChangeType(topshelfExitCode, topshelfExitCode.GetTypeCode());
-        //    Environment.ExitCode = exitCode;
-
-
-
-        //}
-
-
-        public Program()
+        private static void Main()
         {
-
-        }
-        public Program(IKinderlyApiService kinderlyApiService, IBluelightApiService bluelightApiService)
-        {
-            _kinderlyApiService = kinderlyApiService;
-            _bluelightApiService = bluelightApiService;
-        }
-
-
-
-        static async Task Main(string[] args)
-        {
+            Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
 
             var services = ConfigureServices();
             var serviceProvider = services.BuildServiceProvider();
-
-            var config = LoadConfiguration();
 
             var path = AppDomain.CurrentDomain.BaseDirectory + "KinderlyLog.txt";
 
@@ -90,10 +36,64 @@ namespace KinderlyProcessor
 
             Log.Information("Application starting");
 
-            //calls the Run method in App, which is replacing Main
-            await serviceProvider.GetService<Program>().Run();
+            var topshelfExitCode = HostFactory.Run(configure =>
+            {
+                configure.Service<Application>(x =>
+                {
+                    x.ConstructUsing(name => serviceProvider.GetService<Application>());
+
+                    x.WhenStarted(application => application.Start());
+                    x.WhenStopped(application => application.Stop());
+                });
+
+                configure.RunAsLocalSystem();
+                configure.SetDisplayName("KinderlyProcessor");
+                configure.SetServiceName("KinderlyProcessor");
+                configure.SetDescription("Provides Pacey members with Kinderdly");
+            });
+
+            var exitCode = (int)Convert.ChangeType(topshelfExitCode, topshelfExitCode.GetTypeCode());
+            Environment.ExitCode = exitCode;
+
 
         }
+
+
+        public Program()
+        {
+
+        }
+
+        //public Program(IKinderlyApiService kinderlyApiService, IBluelightApiService bluelightApiService)
+        //{
+        //    _kinderlyApiService = kinderlyApiService;
+        //    _bluelightApiService = bluelightApiService;
+        //}
+
+
+
+        //static async Task Main(string[] args)
+        //{
+
+        //    var services = ConfigureServices();
+        //    var serviceProvider = services.BuildServiceProvider();
+
+        //    var config = LoadConfiguration();
+
+        //    var path = AppDomain.CurrentDomain.BaseDirectory + "KinderlyLog.txt";
+
+        //    Log.Logger = new LoggerConfiguration()
+        //        .Enrich.FromLogContext()
+        //        .WriteTo.Console()
+        //        .WriteTo.File(path)
+        //        .CreateLogger();
+
+        //    Log.Information("Application starting");
+
+        //    //calls the Run method in App, which is replacing Main
+        //    await serviceProvider.GetService<Program>().Run();
+
+        //}
 
         private static IServiceCollection ConfigureServices()
         {
@@ -105,7 +105,6 @@ namespace KinderlyProcessor
             // Required to run the application.
             services.AddTransient<IBluelightApiService, BluelightApiService>();
             services.AddTransient<IKinderlyApiService, KinderlyApiService>();
-            services.AddTransient<Program>();
             services.AddTransient<Application>();
             services.AddTransient<IEmailSercive, EmailService>();
             services.AddHttpClient();
@@ -138,7 +137,15 @@ namespace KinderlyProcessor
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(authToken));
             });
 
-            services.AddHttpClient("DigitalContractApi", client =>
+            services.AddHttpClient("DigitalContractApiLive", client =>
+            {
+                client.BaseAddress = new Uri(config.GetValue<string>("appsettings:DigitalContractApiUrl"));
+                var authToken = Encoding.ASCII.GetBytes($"{config.GetValue<string>("appsettings:DigitalUserName")}:{config.GetValue<string>("appsettings:DigitalPassword")}");
+
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(authToken));
+            });
+
+            services.AddHttpClient("DigitalContractApiDev", client =>
             {
                 client.BaseAddress = new Uri(config.GetValue<string>("appsettings:DigitalContractApiUrl"));
 
@@ -168,20 +175,20 @@ namespace KinderlyProcessor
         }
 
 
-        //public async Task Run()
-        //{
+        //    public async Task Run()
+        //    {
 
-        //    //if (await _bluelightApiService.GetMembershipsAsync() != null)
-        //    //{
-        //    await _kinderlyApiService.SendApprovedPaceyMembersAsync();
-        //    //}
-        //    // await _bluelightApiService.GetContracts();
+        //        //if (await _bluelightApiService.GetMembershipsAsync() != null)
+        //        //{
+        //        await _kinderlyApiService.SendApprovedPaceyMembersAsync();
+        //        //}
+        //        // await _bluelightApiService.GetContracts();
 
-        //    //  await _kinderlyApiService.ProcessDigitalContractsAsync();
-    
+        //        //  await _kinderlyApiService.ProcessDigitalContractsAsync();
 
-        //    //await emailService.SendUnApprovedMembers();
 
-        //}
+        //        //await emailService.SendUnApprovedMembers();
+
+        //    }
     }
 }

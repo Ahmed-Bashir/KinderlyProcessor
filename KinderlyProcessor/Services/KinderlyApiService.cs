@@ -23,7 +23,7 @@ namespace KinderlyProcessor.Services
         private readonly ILogger<KinderlyApiService> _logger;
         private readonly Dictionary<string, string> _applicationSetting;
 
-        private string DigitalContractEndpoint { get; set; }
+     
 
         public KinderlyApiService(IBluelightApiService bluelightApiService, IHttpClientFactory httpClientFactory, IEmailSercive emailService, ILogger<KinderlyApiService> logger, IOptions<Dictionary<string, string>> options)
         {
@@ -33,7 +33,7 @@ namespace KinderlyProcessor.Services
             _logger = logger;
             _applicationSetting = options.Value;
 
-            DigitalContractEndpoint = "https://stagingdigitalcontracts.pacey.org.uk/api/v1/customer/order";
+           
         }
 
 
@@ -91,6 +91,9 @@ namespace KinderlyProcessor.Services
 
             }
 
+
+         
+
             // Send Pacey memebers to Kinderly 
             var response = await client.PostAsJsonAsync(client.BaseAddress, new { data = paceyMembers });
 
@@ -99,7 +102,9 @@ namespace KinderlyProcessor.Services
 
             var result = await response.Content.ReadAsStringAsync();
 
-            dynamic KinderlyResponse = JsonConvert.DeserializeObject(jsonResponse);
+            _logger.LogInformation(result);
+
+         dynamic KinderlyResponse = JsonConvert.DeserializeObject(jsonResponse);
 
             // Use Kinderly response date to create a list of now Kinderly members using Json model 
 
@@ -158,10 +163,6 @@ namespace KinderlyProcessor.Services
 
 
                 }
-
-               
-
-
 
             }
 
@@ -301,9 +302,9 @@ namespace KinderlyProcessor.Services
         /// Sends Pacey Members approved Kinderly back to Bluelight  
         /// </summary>
 
-        public async Task ProcessDigitalContractsAsync()
+        public async Task ProcessDigitalContractsAsync(string api)
         {
-            var client = _httpClientFactory.CreateClient("DigitalContractApi");
+            var client = _httpClientFactory.CreateClient(api);
 
             var digitalContracts = await GetDigitalContractsAsync();
 
@@ -325,7 +326,7 @@ namespace KinderlyProcessor.Services
                     if (IsValid(email))
                     {
                         var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
-                        var response = await client.PostAsync(DigitalContractEndpoint, content);
+                        var response = await client.PostAsync(client.BaseAddress, content);
                         await _bluelightApiService.PostInvoice(contract.invoice, contract.KinderlyIntegrationDate);
 
                         _logger.LogInformation("Customer with Email: {0} processed succesfully.", email);
@@ -355,10 +356,16 @@ namespace KinderlyProcessor.Services
 
 
 
+
+
+
             }
     
 
             }
+
+
+
 
 
 
@@ -374,7 +381,7 @@ namespace KinderlyProcessor.Services
                 await _bluelightApiService.PostContacts(kinderlyMemberships);
             }
 
-            
+
 
         }
 

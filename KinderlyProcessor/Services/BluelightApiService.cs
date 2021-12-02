@@ -32,13 +32,13 @@ namespace KinderlyProcessor.Services
 
 
             // End point to send members that have been approved by Kinderly
-            NewKinderlyMembersEndPoint = "/api/v1/Kinderly/Memberships";
+            NewKinderlyMembersEndPoint = "api/v1/Kinderly/Memberships";
 
             // End point to send contact informtion of members that have been approved by Kinderly
-            ContactsEndPoint = "/api/v1/Kinderly/Contacts";
+            ContactsEndPoint = "api/v1/Kinderly/Contacts";
 
             // End point to send Invoiveapproved by Kinderly
-            InvoiceEndPoint = "/api/v1/Kinderly/Invoices";
+            InvoiceEndPoint = "api/v1/Kinderly/Invoices";
 
         
 
@@ -51,12 +51,14 @@ namespace KinderlyProcessor.Services
         {
             string dateFrom = DateTime.Today.AddDays(-14).ToString("yyyy-MM-dd");
             string dateTo = DateTime.Now.ToString("yyyy-MM-dd");
+            //string dateFrom = "2021-09-20";
+            //string dateTo = "2021-09-25";
 
             var client = _httpClientFactory.CreateClient("BluelightApi");
 
-            var response = await client.GetAsync(client.BaseAddress + $"/api/v1/Kinderly/Memberships?dateFrom={dateFrom}&dateTo={dateTo}");
+            var response = await client.GetAsync(client.BaseAddress + $"api/v1/Kinderly/Memberships?dateFrom={dateFrom}&dateTo={dateTo}");
 
-          //  Console.WriteLine(response.Content.ReadAsStringAsync().Result);
+            //  Console.WriteLine(response.Content.ReadAsStringAsync().Result);
 
      
 
@@ -70,7 +72,7 @@ namespace KinderlyProcessor.Services
 
             var client = _httpClientFactory.CreateClient("BluelightApi");
 
-            var response = await client.GetAsync(client.BaseAddress + $"/api/v1/Kinderly/Invoices?dateFrom={dateFrom}&dateTo={dateTo}&productCodes=CC1D,WCC1D,NCC1D,STCCD,ASCC1D");
+            var response = await client.GetAsync(client.BaseAddress + $"api/v1/Kinderly/Invoices?dateFrom={dateFrom}&dateTo={dateTo}&productCodes=CC1D,WCC1D,NCC1D,STCCD,ASCC1D");
 
             Console.WriteLine(response.Content.ReadAsStringAsync().Result);
 

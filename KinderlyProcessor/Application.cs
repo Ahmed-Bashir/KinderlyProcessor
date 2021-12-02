@@ -10,7 +10,7 @@ namespace KinderlyProcessor
     {
 
         private readonly IKinderlyApiService _kinderlyApiService;
-        private Timer _timer;
+        private readonly Timer _timer;
 
         public Application(IKinderlyApiService kinderlyApiService)
         {
@@ -36,15 +36,12 @@ namespace KinderlyProcessor
 
         private void OnTick(object sender, EventArgs args) {
 
-            //Task.Run(() => _kinderlyApiService.SendApprovedPaceyMembersAsync());
+           
 
-            Task.Run(() => _kinderlyApiService.ProcessDigitalContractsAsync());
+            Task.Run(() => _kinderlyApiService.SendApprovedPaceyMembersAsync());
+            Task.Run(() => _kinderlyApiService.ProcessDigitalContractsAsync("DigitalContractApiLive"));
+           
 
-            //string[] lines = new string[] { DateTime.Now.ToString() };
-            ////string path = @"C:\Users\a.salad\Desktop\Pacey\Kinderly\ImAlive.txt";
-            //string path = @"C:\Programs\KinderlyProcessor\ImAlive.txt";
-
-            //File.AppendAllLines(path, lines);
 
 
         } 

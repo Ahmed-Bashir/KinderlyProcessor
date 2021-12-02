@@ -11,10 +11,6 @@ namespace KinderlyProcessor.Models
         public bool KinderlyMember { get; set; }
         public bool KinderlyLead { get; set; }
         public string KinderlyIntegrationDate { get; set; } = DateTime.Now.ToString("s");
-       
-
-
-       
 
     }
     
