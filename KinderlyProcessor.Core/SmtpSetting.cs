@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace KinderlyProcessor
+namespace KinderlyProcessor.Core
 {
    public class SmtpSetting
     {

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using KinderlyProcessor.Models;
+using KinderlyProcessor.Core.Models;
 
-namespace KinderlyProcessor.Interfaces
+namespace KinderlyProcessor.Core.Interfaces
 {
     public interface IBluelightApiService
     {

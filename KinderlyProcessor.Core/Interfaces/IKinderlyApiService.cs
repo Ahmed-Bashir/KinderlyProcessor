@@ -1,10 +1,10 @@
-﻿using KinderlyProcessor.Models;
+﻿using KinderlyProcessor.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KinderlyProcessor.Interfaces
+namespace KinderlyProcessor.Core.Interfaces
 {
     public interface IKinderlyApiService
     {

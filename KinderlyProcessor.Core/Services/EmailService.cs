@@ -8,9 +8,9 @@ using System.Text;
 using FluentEmail.Razor;
 using System.Collections.Generic;
 using Microsoft.Extensions.Options;
-using KinderlyProcessor.Interfaces;
+using KinderlyProcessor.Core.Interfaces;
 
-namespace KinderlyProcessor.Services
+namespace KinderlyProcessor.Core.Services
 {
     public class EmailService : IEmailSercive
     {

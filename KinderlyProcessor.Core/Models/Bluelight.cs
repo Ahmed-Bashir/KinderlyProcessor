@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace KinderlyProcessor.Models
+namespace KinderlyProcessor.Core.Models
 {
     public class Bluelight
     {

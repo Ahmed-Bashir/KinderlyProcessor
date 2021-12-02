@@ -1,8 +1,8 @@
 ﻿using System;
-using KinderlyProcessor.Interfaces;
 using System.Threading.Tasks;
 using System.Timers;
 using System.IO;
+using KinderlyProcessor.Core.Interfaces;
 
 namespace KinderlyProcessor
 {

@@ -1,5 +1,5 @@
-﻿using KinderlyProcessor.Interfaces;
-using KinderlyProcessor.Models;
+﻿using KinderlyProcessor.Core.Interfaces;
+using KinderlyProcessor.Core.Models;
 
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using System.Net.Mail;
 
-namespace KinderlyProcessor.Services
+namespace KinderlyProcessor.Core.Services
 {
     public class KinderlyApiService : IKinderlyApiService
     {

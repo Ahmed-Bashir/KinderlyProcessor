@@ -3,13 +3,13 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
-using KinderlyProcessor.Models;
-using KinderlyProcessor.Interfaces;
+using KinderlyProcessor.Core.Models;
+using KinderlyProcessor.Core.Interfaces;
 using Newtonsoft.Json;
 using System;
 using System.Globalization;
 
-namespace KinderlyProcessor.Services
+namespace KinderlyProcessor.Core.Services
 {
 
     /// 

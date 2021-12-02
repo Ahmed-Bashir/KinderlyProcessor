@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace KinderlyProcessor.Models
+namespace KinderlyProcessor.Core.Models
 {
 
     public class KinderlyMembership
