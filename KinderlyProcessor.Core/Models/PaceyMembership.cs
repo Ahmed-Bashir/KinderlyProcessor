@@ -1,34 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Newtonsoft.Json;
 
 namespace KinderlyProcessor.Core.Models
 {
     public class PaceyMembership
     {
+        [JsonProperty("contact_id")]
+        public string ContactId { get; set; }
 
-        public string contact_id { get; set; }
-        public string email { get; set; }
-        public string postcode { get; set; }
-        public string last_name { get; set; }
-        public string first_name { get; set; }
-        public Membership membership { get; set; }
-   
+        [JsonProperty("email")]
+        public string Email { get; set; }
 
+        [JsonProperty("postcode")]
+        public string Postcode { get; set; }
+
+        [JsonProperty("last_name")]
+        public string LastName { get; set; }
+
+        [JsonProperty("first_name")]
+        public string FirstName { get; set; }
+
+        [JsonProperty("membership")]
+        public Membership Membership { get; set; }
     }
-
 
     public class Membership
     {
-        public string membership_sub_type { get; set; }
-        public string membership_class { get; set; }
-        public string membership_no { get; set; }
-        public string membership_grade { get; set; }
-        public string membership_id { get; set; }
-        public string payment_method { get; set; }
-        public string membership_valid_from { get; set; }
-        public string membership_valid_to { get; set; }
+        [JsonProperty("membership_sub_type")]
+        public string MembershipSubType { get; set; }
 
+        [JsonProperty("membership_class")]
+        public string MembershipClass { get; set; }
+
+        [JsonProperty("membership_no")]
+        public string MembershipNo { get; set; }
+
+        [JsonProperty("membership_grade")]
+        public string MembershipGrade { get; set; }
+
+        [JsonProperty("membership_id")]
+        public string MembershipId { get; set; }
+
+        [JsonProperty("payment_method")]
+        public string PaymentMethod { get; set; }
+
+        [JsonProperty("membership_valid_from")]
+        public string MembershipValidFrom { get; set; }
+
+        [JsonProperty("membership_valid_to")]
+        public string MembershipValidTo { get; set; }
     }
-
 }

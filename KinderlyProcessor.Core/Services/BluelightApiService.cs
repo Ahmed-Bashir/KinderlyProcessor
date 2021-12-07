@@ -7,30 +7,22 @@ using KinderlyProcessor.Core.Models;
 using KinderlyProcessor.Core.Interfaces;
 using Newtonsoft.Json;
 using System;
-using System.Globalization;
+using System.Linq;
 
 namespace KinderlyProcessor.Core.Services
 {
-
-    /// 
-    /// <summary>
-    /// 
-    /// </summary>
     public class BluelightApiService : IBluelightApiService
     {
-
         private readonly IHttpClientFactory _httpClientFactory;
+
         private string NewKinderlyMembersEndPoint { get; }
+
         private string ContactsEndPoint { get; }
+
         private string InvoiceEndPoint { get; }
-
-
-
 
         public BluelightApiService(IHttpClientFactory httpClientFactory)
         {
-
-
             // End point to send members that have been approved by Kinderly
             NewKinderlyMembersEndPoint = "api/v1/Kinderly/Memberships";
 
@@ -40,112 +32,71 @@ namespace KinderlyProcessor.Core.Services
             // End point to send Invoiveapproved by Kinderly
             InvoiceEndPoint = "api/v1/Kinderly/Invoices";
 
-        
-
             _httpClientFactory = httpClientFactory;
         }
 
-
-       
         public async Task<List<Bluelight>> GetMembersAsync()
         {
-            string dateFrom = DateTime.Today.AddDays(-14).ToString("yyyy-MM-dd");
-            string dateTo = DateTime.Now.ToString("yyyy-MM-dd");
-            //string dateFrom = "2021-09-20";
-            //string dateTo = "2021-09-25";
-
+            var dateFrom = DateTime.Today.AddDays(-14).ToString("yyyy-MM-dd");
+            var dateTo = DateTime.Now.ToString("yyyy-MM-dd");
             var client = _httpClientFactory.CreateClient("BluelightApi");
-
             var response = await client.GetAsync(client.BaseAddress + $"api/v1/Kinderly/Memberships?dateFrom={dateFrom}&dateTo={dateTo}");
-
-            //  Console.WriteLine(response.Content.ReadAsStringAsync().Result);
-
-     
-
-            return await response.Content.ReadFromJsonAsync<List<Bluelight>>() ?? null;
+            return await response.Content.ReadFromJsonAsync<List<Bluelight>>();
         }
 
         public async Task<List<Bluelight>> GetContracts()
         {
             string dateFrom = DateTime.Now.ToString("yyyy-MM-dd");
             string dateTo = DateTime.Now.ToString("yyyy-MM-dd");
-
             var client = _httpClientFactory.CreateClient("BluelightApi");
-
             var response = await client.GetAsync(client.BaseAddress + $"api/v1/Kinderly/Invoices?dateFrom={dateFrom}&dateTo={dateTo}&productCodes=CC1D,WCC1D,NCC1D,STCCD,ASCC1D");
-
             Console.WriteLine(response.Content.ReadAsStringAsync().Result);
-
-
-
-            return await response.Content.ReadFromJsonAsync<List<Bluelight>>() ?? null;
+            return await response.Content.ReadFromJsonAsync<List<Bluelight>>();
         }
-
-
-       
 
         public async Task PostInvoice(string id, string kinderlyIntegrationDate)
         {
             var client = _httpClientFactory.CreateClient("BluelightApi");
 
             var data = new
-                {
-                    Id = id,
+            {
+                Id = id,
+                KinderlyIntegrationDate = kinderlyIntegrationDate
+            };
 
-                    KinderlyIntegrationDate = kinderlyIntegrationDate
-                };
-
-                var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
-                var response = await client.PostAsync(client.BaseAddress + InvoiceEndPoint, content);
-                var viewcontent = response.Content.ReadAsStringAsync();
-            
-
+            var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+            var response = await client.PostAsync(client.BaseAddress + InvoiceEndPoint, content);
+            var viewcontent = await response.Content.ReadAsStringAsync();
         }
-
 
         public async Task PostMemberships(List<KinderlyMembership> kinderlyMembers)
         {
             var client = _httpClientFactory.CreateClient("BluelightApi");
 
-            foreach (var member in kinderlyMembers)
+            foreach (var content in kinderlyMembers.Select(member => new
             {
-                var data = new
-                {
-                    member.Id,
-                    member.KinderlyIntegrationDate
-                };
-
-                var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+                member.Id,
+                member.KinderlyIntegrationDate
+            }).Select(data => new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json")))
+            {
                 var response = await client.PostAsync(client.BaseAddress + NewKinderlyMembersEndPoint, content);
-                var viewcontent = response.Content.ReadAsStringAsync();
+                var viewcontent = await response.Content.ReadAsStringAsync();
             }
-
         }
-
 
         public async Task PostContacts(List<KinderlyMembership> kinderlyMembers)
         {
             var client = _httpClientFactory.CreateClient("BluelightApi");
 
-            foreach (var member in kinderlyMembers)
+            foreach (var content in kinderlyMembers.Select(member => new
             {
-                var data = new
-                {
-                    member.Contact.Id,
-                    member.KinderlyMember,
-                    member.KinderlyLead
-                };
-
-                var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+                member.Contact.Id,
+                member.KinderlyMember,
+                member.KinderlyLead
+            }).Select(data => new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json")))
+            {
                 var response = await client.PostAsync(client.BaseAddress + ContactsEndPoint, content);
-
-           
-
             }
-
-       
         }
-
-
     }
 }

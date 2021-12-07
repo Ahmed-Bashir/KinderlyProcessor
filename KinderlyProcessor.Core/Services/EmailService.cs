@@ -1,5 +1,4 @@
-﻿
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Net;
 using System.Net.Mail;
 using FluentEmail.Core;
@@ -14,58 +13,43 @@ namespace KinderlyProcessor.Core.Services
 {
     public class EmailService : IEmailSercive
     {
+        private readonly SmtpSetting _smtpSetting;
 
-        private readonly SmtpSetting smtpSetting; 
+        public EmailService(IOptions<SmtpSetting> options) => _smtpSetting = options.Value;
 
-        public EmailService(IOptions<SmtpSetting> options)
-        {
-            smtpSetting = options.Value;
-        }
-
-     
         public async Task SendUnapprovedMembers(List<dynamic> members)
         {
-
-
             Email.DefaultSender = GetSmtpSender();
             Email.DefaultRenderer = new RazorRenderer();
+            var template = new StringBuilder();
 
-            var template = new StringBuilder ();
-
-           
-           template.AppendLine("The following members were not approved:");
-           template.AppendLine("@foreach (var member in Model)" +
-                "{" +
-                "<p>Membership ID: @member.customer.membership.membership_id </p>" +
-                "<p>First name: @member.customer.first_name </p>" +
-                "<p>Last name: @member.customer.last_name </p>" +
-                 "<p>Error:</p>" +
-                "@foreach (var error in member.message.postcode)" +
+            template.AppendLine("The following members were not approved:");
+            template.AppendLine("@foreach (var member in Model)" +
                  "{" +
-                 "<ul><li> @error </li></ul>" +
-                  "}" +
-                "}");
+                 "<p>Membership ID: @member.customer.membership.membership_id </p>" +
+                 "<p>First name: @member.customer.first_name </p>" +
+                 "<p>Last name: @member.customer.last_name </p>" +
+                  "<p>Error:</p>" +
+                 "@foreach (var error in member.message.postcode)" +
+                  "{" +
+                  "<ul><li> @error </li></ul>" +
+                   "}" +
+                 "}");
 
-            var email = await Email
-                .From(smtpSetting.From)
-                .To(smtpSetting.To)
-                .CC(smtpSetting.CC)
-                .Subject(smtpSetting.Subject)
+            await Email
+                .From(_smtpSetting.From)
+                .To(_smtpSetting.To)
+                .CC(_smtpSetting.Cc)
+                .Subject(_smtpSetting.Subject)
                 .UsingTemplate(template.ToString(), members)
                 .SendAsync();
-
-
         }
 
         public async Task SendFailedContracts(List<dynamic> contracts)
         {
-            
-
             Email.DefaultSender = GetSmtpSender();
             Email.DefaultRenderer = new RazorRenderer();
-
             var template = new StringBuilder();
-
 
             template.AppendLine("The following contract(s) could not be processed:");
             template.AppendLine("@foreach (var contract in Model)" +
@@ -76,27 +60,20 @@ namespace KinderlyProcessor.Core.Services
                  "<p>Invoice: @contract.invoice </p>" +
                  "}");
 
-            var email = await Email
-                .From(smtpSetting.From)
-                .To(smtpSetting.To)
-                .CC(smtpSetting.CC)
-                .Subject(smtpSetting.Subject)
+            await Email
+                .From(_smtpSetting.From)
+                .To(_smtpSetting.To)
+                .CC(_smtpSetting.Cc)
+                .Subject(_smtpSetting.Subject)
                 .UsingTemplate(template.ToString(), contracts)
                 .SendAsync();
-
-
         }
-
 
         public async Task SendUnrecognisedProducts(dynamic item)
         {
-
-
             Email.DefaultSender = GetSmtpSender();
             Email.DefaultRenderer = new RazorRenderer();
-
             var template = new StringBuilder();
-
 
             template.AppendLine("The following product(s) could not be recognised:");
             template.AppendLine(
@@ -110,37 +87,26 @@ namespace KinderlyProcessor.Core.Services
                   "<ul><li> @error </li></ul>" +
                    "}");
 
-            var email = await Email
-                .From(smtpSetting.From)
-                .To(smtpSetting.To)
-                .CC(smtpSetting.CC)
-                .Subject(smtpSetting.Subject)
+            await Email
+                .From(_smtpSetting.From)
+                .To(_smtpSetting.To)
+                .CC(_smtpSetting.Cc)
+                .Subject(_smtpSetting.Subject)
                 .UsingTemplate(template.ToString(), item)
                 .SendAsync();
-
-
         }
 
-        private SmtpSender GetSmtpSender()
+        private SmtpSender GetSmtpSender() => new SmtpSender(() => new SmtpClient(_smtpSetting.SmtpHost)
         {
-            var sender = new SmtpSender(() => new SmtpClient(smtpSetting.SmtpHost)
-
+            UseDefaultCredentials = true,
+            Credentials = new NetworkCredential
             {
-                UseDefaultCredentials = true,
-                Credentials = new NetworkCredential()
-                {
-                    UserName = smtpSetting.SmtpUser,
-                    Password = smtpSetting.SmtpPassword,
-
-                },
-                Port = smtpSetting.SmtpPort,
-                DeliveryMethod = SmtpDeliveryMethod.Network,
-                EnableSsl = true,
-
-            });
-
-            return sender;
-        }
-
+                UserName = _smtpSetting.SmtpUser,
+                Password = _smtpSetting.SmtpPassword
+            },
+            Port = _smtpSetting.SmtpPort,
+            DeliveryMethod = SmtpDeliveryMethod.Network,
+            EnableSsl = true
+        });
     }
 }

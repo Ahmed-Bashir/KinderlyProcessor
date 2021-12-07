@@ -1,6 +1,5 @@
 ﻿using KinderlyProcessor.Core.Interfaces;
 using KinderlyProcessor.Core.Models;
-
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +8,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Globalization;
 using System.Text;
 using Microsoft.Extensions.Options;
 using System.Net.Mail;
@@ -23,8 +23,6 @@ namespace KinderlyProcessor.Core.Services
         private readonly ILogger<KinderlyApiService> _logger;
         private readonly Dictionary<string, string> _applicationSetting;
 
-     
-
         public KinderlyApiService(IBluelightApiService bluelightApiService, IHttpClientFactory httpClientFactory, IEmailSercive emailService, ILogger<KinderlyApiService> logger, IOptions<Dictionary<string, string>> options)
         {
             _bluelightApiService = bluelightApiService;
@@ -32,67 +30,42 @@ namespace KinderlyProcessor.Core.Services
             _emailService = emailService;
             _logger = logger;
             _applicationSetting = options.Value;
-
-           
         }
-
 
         /// <summary>
         /// Appoves Pacey members for Kinderly product 
         /// </summary>
         /// <returns>A list of approved Pacey members </returns>
-
         public async Task<List<KinderlyMembership>> ApprovePaceyMembers()
         {
-
             var client = _httpClientFactory.CreateClient("KinderlyApi");
-
-            var paceyMembers = new List<PaceyMembership>();
-
             var kinderlyMemberships = new List<KinderlyMembership>();
 
             //Retrive a list of unapproved Pacey members from Bluelight 
             var members = await _bluelightApiService.GetMembersAsync();
 
-
-            if (members.Count == 0)
-
-                return kinderlyMemberships;
+            if (members.Count == 0) return kinderlyMemberships;
 
             // Creates a list of Pacey members with data from Bluelight using Json Model
-            foreach (var member in members)
+            var paceyMembers = members.Select(member => new PaceyMembership()
             {
-                var paceyMember = new PaceyMembership()
+                ContactId = member.Contact.Id,
+                Email = member.Contact.EmailAddress1,
+                Postcode = member.Contact.Address2Postcode,
+                FirstName = member.Contact.FirstName,
+                LastName = member.Contact.LastName,
+                Membership = new Membership
                 {
-
-                    contact_id = member.Contact.Id,
-                    email = member.Contact.EmailAddress1,
-                    postcode = member.Contact.Address2Postcode,
-                    first_name = member.Contact.FirstName,
-                    last_name = member.Contact.LastName,
-
-                    membership = new Membership()
-                    {
-
-                        membership_sub_type = member.SubType.Label,
-                        membership_class = member.Class.Name,
-                        membership_no = member.MembershipNumber,
-                        membership_grade = member.Grade.Name,
-                        membership_id = member.Id,
-                        payment_method = member.PaymentMethod.Label,
-                        membership_valid_from = member.ValidFrom.ToString(),
-                        membership_valid_to = member.ValidTo.ToString()
-
-                    }
-
-                };
-
-                paceyMembers.Add(paceyMember);
-
-            }
-
-
-         
+                    MembershipSubType = member.SubType.Label,
+                    MembershipClass = member.Class.Name,
+                    MembershipNo = member.MembershipNumber,
+                    MembershipGrade = member.Grade.Name,
+                    MembershipId = member.Id,
+                    PaymentMethod = member.PaymentMethod.Label,
+                    MembershipValidFrom = member.ValidFrom.ToString(CultureInfo.InvariantCulture),
+                    MembershipValidTo = member.ValidTo.ToString(CultureInfo.InvariantCulture)
+                }
+            }).ToList();
 
             // Send Pacey memebers to Kinderly 
             var response = await client.PostAsJsonAsync(client.BaseAddress, new { data = paceyMembers });
@@ -101,85 +74,57 @@ namespace KinderlyProcessor.Core.Services
             var jsonResponse = await response.Content.ReadAsStringAsync();
 
             var result = await response.Content.ReadAsStringAsync();
-
             _logger.LogInformation(result);
 
-         dynamic KinderlyResponse = JsonConvert.DeserializeObject(jsonResponse);
-
             // Use Kinderly response date to create a list of now Kinderly members using Json model 
+            dynamic kinderlyResponse = JsonConvert.DeserializeObject(jsonResponse);
 
             var unApprovedMembers = new List<dynamic>();
-            string membershipId = string.Empty;
-            string email = string.Empty;
 
-            if (KinderlyResponse != null)
+            if (kinderlyResponse == null)
+                return kinderlyMemberships;
+
+            foreach (var member in kinderlyResponse.data)
             {
-
-                foreach (var member in KinderlyResponse.data)
+                string membershipId;
+                string email;
+                if (member.success == true)
                 {
+                    membershipId = member.customer.membership_id;
+                    email = member.customer.email;
 
-
-                    if (member.success == true)
+                    var kinderlyMember = new KinderlyMembership
                     {
+                        Id = member.customer.membership_id,
 
-                        membershipId = member.customer.membership_id;
-                        email = member.customer.email;
-
-                        var kinderlyMember = new KinderlyMembership()
+                        Contact = new Contact
                         {
-                            Id = member.customer.membership_id,
+                            Id = member.customer.contact_id
+                        },
 
-                            Contact = new Contact()
-                            {
-                                Id = member.customer.contact_id
-                            },
+                        KinderlyLead = member.customer.kinderly_lead == "1",
+                        KinderlyMember = member.customer.kt_member == "1"
+                    };
 
-                            KinderlyLead = member.customer.kinderly_lead != "1" ? false : true,
-                            KinderlyMember = member.customer.kt_member != "1" ? false : true
-                        };
-
-
-
-                        _logger.LogInformation("Kinderly member with Membership Id: {0} and Email: {1} processed succesfully.", membershipId, email);
-
-                        _logger.LogInformation(result);
-
-                        kinderlyMemberships.Add(kinderlyMember);
-                    }
-                    else
-                    {
-                        membershipId = member.customer.membership.membership_id;
-                        email = member.customer.email;
-
-                        _logger.LogError("Kinderly member with Membership Id: {0} and Email: {1} processed unsuccesfully.", membershipId, email);
-
-                        _logger.LogError(result);
-
-                        unApprovedMembers.Add(member);
-
-                        await _emailService.SendUnapprovedMembers(unApprovedMembers);
-
-                    }
-
-
+                    _logger.LogInformation("Kinderly member with Membership Id: {0} and Email: {1} processed succesfully.", membershipId, email);
+                    _logger.LogInformation(result);
+                    kinderlyMemberships.Add(kinderlyMember);
                 }
-
+                else
+                {
+                    membershipId = member.customer.membership.membership_id;
+                    email = member.customer.email;
+                    _logger.LogError("Kinderly member with Membership Id: {0} and Email: {1} processed unsuccesfully.", membershipId, email);
+                    _logger.LogError(result);
+                    unApprovedMembers.Add(member);
+                    await _emailService.SendUnapprovedMembers(unApprovedMembers);
+                }
             }
-
-
-
-
             return kinderlyMemberships;
-
         }
 
         public async Task<List<DigitalContract>> GetDigitalContractsAsync()
         {
-
-
-
-
-
             //Retrive a list of digital contracts from Bluelight 
             var contracts = await _bluelightApiService.GetContracts();
 
@@ -187,109 +132,62 @@ namespace KinderlyProcessor.Core.Services
             var orders = new List<OrderSummary>();
             var unrecognisedProducts = new List<dynamic>();
 
-
-
-
             if (contracts.Count == 0)
-
                 return digitalContracts;
-
 
             foreach (var contract in contracts)
             {
-                foreach (var item in contract.Products)
+                orders.AddRange(contract.Products.Select(item => new OrderSummary { Quantity = item.Quantity, UrId = item.Product.Name, OrderRefId = contract.CmsId }));
+
+                var digitalContract = new DigitalContract
                 {
-                    var orderSummary = new OrderSummary()
-                    {
-
-                        quantity = item.Quantity,
-                        urid = item.Product.Name,
-                        order_ref_id = contract.CmsId
-
-                    };
-
-                    orders.Add(orderSummary);
-                }
-
-
-
-                var digitalContract = new DigitalContract()
-                {
-
-                    invoice = contract.Products.Select(item => item.Invoice.Id).FirstOrDefault(),
-                    email = contract.Contact.EmailAddress1,
-                    first_name = contract.Contact.FirstName,
-                    last_name = contract.Contact.LastName,
-                    order_summary = orders
-
-
-
+                    Invoice = contract.Products.Select(item => item.Invoice.Id).FirstOrDefault(),
+                    Email = contract.Contact.EmailAddress1,
+                    FirstName = contract.Contact.FirstName,
+                    LastName = contract.Contact.LastName,
+                    OrderSummary = orders
                 };
 
-
-
                 digitalContracts.Add(digitalContract);
-
             }
-
-
 
             foreach (var contract in digitalContracts)
             {
-                foreach (var product in contract.order_summary)
+                foreach (var product in contract.OrderSummary)
                 {
-                    if (_applicationSetting.ContainsKey(product.urid))
+                    if (_applicationSetting.ContainsKey(product.UrId))
                     {
-                        product.urid = _applicationSetting[product.urid];
+                        product.UrId = _applicationSetting[product.UrId];
                     }
-                    else 
+                    else
                     {
-                        unrecognisedProducts.Add(product.urid);
-                        continue;
-                        
+                        unrecognisedProducts.Add(product.UrId);
                     }
-                   
-                    
-
                 }
 
-                if (unrecognisedProducts.Any())
+                if (!unrecognisedProducts.Any())
+                    continue;
+
+                var item = new
                 {
+                    email = contract.Email,
+                    first_name = contract.FirstName,
+                    last_name = contract.LastName,
+                    invoice = contract.Invoice,
+                    products = unrecognisedProducts
+                };
 
-                    var item = new
-                    {
-                        contract.email,
-                        contract.first_name,
-                        contract.last_name,
-                        contract.invoice,
-                        products = unrecognisedProducts
-
-
-
-                    };
-
-                  await _emailService.SendUnrecognisedProducts(item);
-                }
-
-
+                await _emailService.SendUnrecognisedProducts(item);
             }
 
-           
-
-
-
-
             return digitalContracts;
-
         }
-
 
         public bool IsValid(string emailaddress)
         {
             try
             {
-                MailAddress m = new MailAddress(emailaddress);
-
+                _ = new MailAddress(emailaddress);
                 return true;
             }
             catch (FormatException)
@@ -301,90 +199,54 @@ namespace KinderlyProcessor.Core.Services
         /// <summary>
         /// Sends Pacey Members approved Kinderly back to Bluelight  
         /// </summary>
-
         public async Task ProcessDigitalContractsAsync(string api)
         {
             var client = _httpClientFactory.CreateClient(api);
-
             var digitalContracts = await GetDigitalContractsAsync();
-
             var failedContracts = new List<dynamic>();
 
-            if (digitalContracts.Any())
+            if (!digitalContracts.Any())
+                return;
+
+            foreach (var contract in digitalContracts)
             {
-                foreach (var contract in digitalContracts)
+                var email = contract.Email;
+                var data = new
                 {
-                    var email = contract.email;
-                    var data = new
-                    {
-                        email,
-                        contract.first_name,
-                        contract.last_name,
-                        contract.order_summary
-                    };
+                    email,
+                    first_name = contract.FirstName,
+                    last_name = contract.LastName,
+                    order_summary = contract.OrderSummary
+                };
 
-                    if (IsValid(email))
-                    {
-                        var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
-                        var response = await client.PostAsync(client.BaseAddress, content);
-                        await _bluelightApiService.PostInvoice(contract.invoice, contract.KinderlyIntegrationDate);
-
-                        _logger.LogInformation("Customer with Email: {0} processed succesfully.", email);
-                    }
-                    else
-                    {
-                        _logger.LogError("Customer with Email: {0} processed Unsuccesfully.", email);
-
-                        failedContracts.Add(contract);
-
-                      
-
-                    }
-
-
-                    if(failedContracts.Any())
-
-                    await _emailService.SendFailedContracts(failedContracts);
-
-
-
-
-                    // var viewcontent = response.Content.ReadAsStringAsync();
-
-
+                if (IsValid(email))
+                {
+                    var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+                    await client.PostAsync(client.BaseAddress, content);
+                    await _bluelightApiService.PostInvoice(contract.Invoice, contract.KinderlyIntegrationDate);
+                    _logger.LogInformation("Customer with Email: {0} processed succesfully.", email);
+                }
+                else
+                {
+                    _logger.LogError("Customer with Email: {0} processed Unsuccesfully.", email);
+                    failedContracts.Add(contract);
                 }
 
-
-
-
-
-
-            }
-    
-
+                if (failedContracts.Any())
+                    await _emailService.SendFailedContracts(failedContracts);
             }
 
-
-
-
-
+        }
 
         public async Task SendApprovedPaceyMembersAsync()
         {
-
             var kinderlyMemberships = await ApprovePaceyMembers();
 
             if (kinderlyMemberships.Any())
             {
                 await _bluelightApiService.PostMemberships(kinderlyMemberships);
-
                 await _bluelightApiService.PostContacts(kinderlyMemberships);
             }
-
-
-
         }
-
     }
 }
-

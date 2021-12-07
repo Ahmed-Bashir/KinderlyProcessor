@@ -1,25 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using Newtonsoft.Json;
 
 namespace KinderlyProcessor.Core.Models
 {
-   public class DigitalContract
+    public class DigitalContract
     {
-        public string email { get; set; }
-        public string first_name { get; set; }
-        public string last_name { get; set; }
-        public string invoice { get; set; }
-        public List<OrderSummary> order_summary { get; set; }
-        public string KinderlyIntegrationDate { get; set; } = DateTime.Now.ToString("s");
+        [JsonProperty("email")]
+        public string Email { get; set; }
 
+        [JsonProperty("first_name")]
+        public string FirstName { get; set; }
+
+        [JsonProperty("last_name")]
+        public string LastName { get; set; }
+
+        [JsonProperty("invoice")]
+        public string Invoice { get; set; }
+
+        [JsonProperty("order_summary")]
+        public List<OrderSummary> OrderSummary { get; set; }
+
+        public string KinderlyIntegrationDate { get; set; } = DateTime.Now.ToString("s");
     }
+
     public class OrderSummary
     {
-        public string urid { get; set; }
-        public string order_ref_id { get; set; }
-        public double quantity { get; set; }
+        [JsonProperty("urid")]
+        public string UrId { get; set; }
+
+        [JsonProperty("order_ref_id")]
+        public string OrderRefId { get; set; }
+
+        [JsonProperty("quantity")]
+        public double Quantity { get; set; }
     }
-
-
 }
