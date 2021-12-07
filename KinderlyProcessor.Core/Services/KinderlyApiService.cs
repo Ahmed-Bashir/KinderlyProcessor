@@ -1,17 +1,17 @@
 ﻿using KinderlyProcessor.Core.Interfaces;
 using KinderlyProcessor.Core.Models;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Globalization;
-using System.Text;
-using Microsoft.Extensions.Options;
 using System.Net.Mail;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace KinderlyProcessor.Core.Services
 {
@@ -88,6 +88,7 @@ namespace KinderlyProcessor.Core.Services
             {
                 string membershipId;
                 string email;
+
                 if (member.success == true)
                 {
                     membershipId = member.customer.membership_id;
@@ -199,9 +200,9 @@ namespace KinderlyProcessor.Core.Services
         /// <summary>
         /// Sends Pacey Members approved Kinderly back to Bluelight  
         /// </summary>
-        public async Task ProcessDigitalContractsAsync(string api)
+        public async Task ProcessDigitalContractsAsync()
         {
-            var client = _httpClientFactory.CreateClient(api);
+            var client = _httpClientFactory.CreateClient("DigitalContractApi");
             var digitalContracts = await GetDigitalContractsAsync();
             var failedContracts = new List<dynamic>();
 
@@ -241,12 +242,9 @@ namespace KinderlyProcessor.Core.Services
         public async Task SendApprovedPaceyMembersAsync()
         {
             var kinderlyMemberships = await ApprovePaceyMembers();
-
-            if (kinderlyMemberships.Any())
-            {
-                await _bluelightApiService.PostMemberships(kinderlyMemberships);
-                await _bluelightApiService.PostContacts(kinderlyMemberships);
-            }
+            if (!kinderlyMemberships.Any()) return;
+            await _bluelightApiService.PostMemberships(kinderlyMemberships);
+            await _bluelightApiService.PostContacts(kinderlyMemberships);
         }
     }
 }

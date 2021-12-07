@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net.Http.Headers;
-using System.Text;
-using KinderlyProcessor.Core;
+﻿using KinderlyProcessor.Core;
 using KinderlyProcessor.Core.Interfaces;
 using KinderlyProcessor.Core.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net.Http.Headers;
+using System.Text;
 using Topshelf;
 
 namespace KinderlyProcessor
@@ -104,7 +104,7 @@ namespace KinderlyProcessor
             return services;
         }
 
-        public static IConfiguration LoadConfiguration() =>
-            new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", false, true).Build();
+        public static IConfiguration LoadConfiguration()
+            => new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", false, true).Build();
     }
 }

@@ -1,6 +1,6 @@
-﻿using System;
+﻿using KinderlyProcessor.Core.Interfaces;
+using System;
 using System.Timers;
-using KinderlyProcessor.Core.Interfaces;
 
 namespace KinderlyProcessor
 {
@@ -24,7 +24,7 @@ namespace KinderlyProcessor
         private void OnTick(object sender, EventArgs args)
         {
             _kinderlyApiService.SendApprovedPaceyMembersAsync().GetAwaiter().GetResult();
-            _kinderlyApiService.ProcessDigitalContractsAsync("DigitalContractApi").GetAwaiter().GetResult();
+            _kinderlyApiService.ProcessDigitalContractsAsync().GetAwaiter().GetResult();
         }
     }
 }
