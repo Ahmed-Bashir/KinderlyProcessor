@@ -58,7 +58,7 @@ namespace KinderlyProcessor.Services
 
             var response = await client.GetAsync(client.BaseAddress + $"api/v1/Kinderly/Memberships?dateFrom={dateFrom}&dateTo={dateTo}");
 
-            //  Console.WriteLine(response.Content.ReadAsStringAsync().Result);
+             Console.WriteLine(response.Content.ReadAsStringAsync().Result);
 
      
 
@@ -78,7 +78,7 @@ namespace KinderlyProcessor.Services
 
 
 
-            return await response.Content.ReadFromJsonAsync<List<Bluelight>>() ?? null;
+            return await response.Content.ReadFromJsonAsync<List<Bluelight>>();
         }
 
 

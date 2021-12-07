@@ -1,17 +1,16 @@
 ﻿using KinderlyProcessor.Interfaces;
 using KinderlyProcessor.Models;
-
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Text;
-using Microsoft.Extensions.Options;
 using System.Net.Mail;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace KinderlyProcessor.Services
 {
@@ -23,7 +22,7 @@ namespace KinderlyProcessor.Services
         private readonly ILogger<KinderlyApiService> _logger;
         private readonly Dictionary<string, string> _applicationSetting;
 
-     
+
 
         public KinderlyApiService(IBluelightApiService bluelightApiService, IHttpClientFactory httpClientFactory, IEmailSercive emailService, ILogger<KinderlyApiService> logger, IOptions<Dictionary<string, string>> options)
         {
@@ -33,7 +32,7 @@ namespace KinderlyProcessor.Services
             _logger = logger;
             _applicationSetting = options.Value;
 
-           
+
         }
 
 
@@ -92,7 +91,7 @@ namespace KinderlyProcessor.Services
             }
 
 
-         
+
 
             // Send Pacey memebers to Kinderly 
             var response = await client.PostAsJsonAsync(client.BaseAddress, new { data = paceyMembers });
@@ -104,7 +103,7 @@ namespace KinderlyProcessor.Services
 
             _logger.LogInformation(result);
 
-         dynamic KinderlyResponse = JsonConvert.DeserializeObject(jsonResponse);
+            dynamic KinderlyResponse = JsonConvert.DeserializeObject(jsonResponse);
 
             // Use Kinderly response date to create a list of now Kinderly members using Json model 
 
@@ -242,14 +241,14 @@ namespace KinderlyProcessor.Services
                     {
                         product.urid = _applicationSetting[product.urid];
                     }
-                    else 
+                    else
                     {
                         unrecognisedProducts.Add(product.urid);
                         continue;
-                        
+
                     }
-                   
-                    
+
+
 
                 }
 
@@ -268,13 +267,13 @@ namespace KinderlyProcessor.Services
 
                     };
 
-                  await _emailService.SendUnrecognisedProducts(item);
+                    await _emailService.SendUnrecognisedProducts(item);
                 }
 
 
             }
 
-           
+
 
 
 
@@ -310,59 +309,51 @@ namespace KinderlyProcessor.Services
 
             var failedContracts = new List<dynamic>();
 
-            if (digitalContracts.Any())
+            if (!digitalContracts.Any()) return;
+
+            foreach (var contract in digitalContracts)
             {
-                foreach (var contract in digitalContracts)
+                var email = contract.email;
+                var data = new
                 {
-                    var email = contract.email;
-                    var data = new
-                    {
-                        email,
-                        contract.first_name,
-                        contract.last_name,
-                        contract.order_summary
-                    };
+                    email,
+                    contract.first_name,
+                    contract.last_name,
+                    contract.order_summary
+                };
 
-                    if (IsValid(email))
-                    {
-                        var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
-                        var response = await client.PostAsync(client.BaseAddress, content);
-                        await _bluelightApiService.PostInvoice(contract.invoice, contract.KinderlyIntegrationDate);
+                if (IsValid(email))
+                {
+                    var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+                    var response = await client.PostAsync(client.BaseAddress, content);
+                    await _bluelightApiService.PostInvoice(contract.invoice, contract.KinderlyIntegrationDate);
 
-                        _logger.LogInformation("Customer with Email: {0} processed succesfully.", email);
-                    }
-                    else
-                    {
-                        _logger.LogError("Customer with Email: {0} processed Unsuccesfully.", email);
+                    _logger.LogInformation("Customer with Email: {0} processed succesfully.", email);
+                }
+                else
+                {
+                    _logger.LogError("Customer with Email: {0} processed Unsuccesfully.", email);
 
-                        failedContracts.Add(contract);
-
-                      
-
-                    }
+                    failedContracts.Add(contract);
 
 
-                    if(failedContracts.Any())
+
+                }
+
+
+                if (failedContracts.Any())
 
                     await _emailService.SendFailedContracts(failedContracts);
 
 
 
 
-                    // var viewcontent = response.Content.ReadAsStringAsync();
-
-
-                }
-
-
-
-
+                // var viewcontent = response.Content.ReadAsStringAsync();
 
 
             }
-    
 
-            }
+        }
 
 
 
