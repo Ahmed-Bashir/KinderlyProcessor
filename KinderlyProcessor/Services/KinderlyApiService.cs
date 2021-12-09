@@ -101,7 +101,7 @@ namespace KinderlyProcessor.Services
 
             var result = await response.Content.ReadAsStringAsync();
 
-            _logger.LogInformation(result);
+             _logger.LogInformation(result);
 
             dynamic KinderlyResponse = JsonConvert.DeserializeObject(jsonResponse);
 
@@ -248,27 +248,27 @@ namespace KinderlyProcessor.Services
 
                     }
 
-
-
-                }
-
-                if (unrecognisedProducts.Any())
-                {
-
-                    var item = new
+                    if (unrecognisedProducts.Any())
                     {
-                        contract.email,
-                        contract.first_name,
-                        contract.last_name,
-                        contract.invoice,
-                        products = unrecognisedProducts
+
+                        var item = new
+                        {
+                            contract.email,
+                            contract.first_name,
+                            contract.last_name,
+                            contract.invoice,
+                            products = unrecognisedProducts
 
 
 
-                    };
+                        };
 
-                    await _emailService.SendUnrecognisedProducts(item);
+                        await _emailService.SendUnrecognisedProducts(item);
+                    }
+
                 }
+
+                
 
 
             }
@@ -301,9 +301,9 @@ namespace KinderlyProcessor.Services
         /// Sends Pacey Members approved Kinderly back to Bluelight  
         /// </summary>
 
-        public async Task ProcessDigitalContractsAsync(string api)
+        public async Task ProcessDigitalContractsAsync()
         {
-            var client = _httpClientFactory.CreateClient(api);
+            var client = _httpClientFactory.CreateClient("DigitalContractApi");
 
             var digitalContracts = await GetDigitalContractsAsync();
 

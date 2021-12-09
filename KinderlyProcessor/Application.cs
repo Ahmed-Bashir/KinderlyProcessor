@@ -24,7 +24,7 @@ namespace KinderlyProcessor
         private void OnTick(object sender, EventArgs args)
         {
             _kinderlyApiService.SendApprovedPaceyMembersAsync().GetAwaiter().GetResult();
-            _kinderlyApiService.ProcessDigitalContractsAsync("DigitalContractApiDev").GetAwaiter().GetResult();
+            _kinderlyApiService.ProcessDigitalContractsAsync().GetAwaiter().GetResult();
         }
     }
 }

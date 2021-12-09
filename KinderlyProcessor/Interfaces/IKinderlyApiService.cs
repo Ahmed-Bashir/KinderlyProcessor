@@ -11,7 +11,7 @@ namespace KinderlyProcessor.Interfaces
         Task<List<KinderlyMembership>> ApprovePaceyMembers();
         Task<List<DigitalContract>> GetDigitalContractsAsync();
 
-        Task ProcessDigitalContractsAsync(string api);
+        Task ProcessDigitalContractsAsync();
         Task SendApprovedPaceyMembersAsync();
     }
 }

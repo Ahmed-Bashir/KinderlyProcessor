@@ -110,16 +110,19 @@ namespace KinderlyProcessor
             services.AddHttpClient();
             services.AddOptions();
 
+            var appsettings = config.GetRequiredSection("Environment").Value.ToLower().Equals("live") ? "appsettingsLive" : "appsettingsDev";
+
+          
 
             services.AddHttpClient("BluelightApi", client =>
             {
-                client.BaseAddress = new Uri(config.GetValue<string>("appsettings:BluelightApiUrl"));
+                client.BaseAddress = new Uri(config.GetValue<string>($"{appsettings}:BluelightApiUrl"));
 
-                var authToken = Encoding.ASCII.GetBytes($"{config.GetValue<string>("appsettings:BluelightUserName")}:{config.GetValue<string>("appsettings:BluelightPassword")}");
+                var authToken = Encoding.ASCII.GetBytes($"{config.GetValue<string>($"{appsettings}:BluelightUserName")}:{config.GetValue<string>($"{appsettings}:BluelightPassword")}");
 
 
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(authToken));
-                var token = client.GetStringAsync(config.GetValue<string>("appsettings:BluelightTokenUrl")).Result;
+                var token = client.GetStringAsync(config.GetValue<string>($"{appsettings}:BluelightTokenUrl")).Result;
 
 
 
@@ -131,26 +134,34 @@ namespace KinderlyProcessor
 
             services.AddHttpClient("KinderlyApi", client =>
             {
-                client.BaseAddress = new Uri(config.GetValue<string>("appsettings:KinderlyApiUrl"));
-                var authToken = Encoding.ASCII.GetBytes($"{config.GetValue<string>("appsettings:KinderlyUserName")}:{config.GetValue<string>("appsettings:KinderlyPassword")}");
+                client.BaseAddress = new Uri(config.GetValue<string>($"{appsettings}:KinderlyApiUrl"));
+                var authToken = Encoding.ASCII.GetBytes($"{config.GetValue<string>($"{appsettings}:KinderlyUserName")}:{config.GetValue<string>($"{appsettings}:KinderlyPassword")}");
 
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(authToken));
             });
 
-            services.AddHttpClient("DigitalContractApiLive", client =>
+            services.AddHttpClient("DigitalContractApi", client =>
             {
-                client.BaseAddress = new Uri(config.GetValue<string>("appsettings:DigitalContractApiUrl"));
-                var authToken = Encoding.ASCII.GetBytes($"{config.GetValue<string>("appsettings:DigitalUserName")}:{config.GetValue<string>("appsettings:DigitalPassword")}");
+                if (appsettings.Equals("appsettingsLive"))
+                {
 
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(authToken));
+                    client.BaseAddress = new Uri(config.GetValue<string>($"{appsettings}:DigitalContractApiUrl"));
+                    var authToken = Encoding.ASCII.GetBytes($"{config.GetValue<string>($"{appsettings}:DigitalUserName")}:{config.GetValue<string>($"{appsettings}:DigitalPassword")}");
+
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(authToken));
+
+                }
+                else
+                {
+
+                    client.BaseAddress = new Uri(config.GetValue<string>($"{appsettings}:DigitalContractApiUrl"));
+
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", config.GetValue<string>($"{appsettings}:DigitalContractToken"));
+
+                }
             });
 
-            services.AddHttpClient("DigitalContractApiDev", client =>
-            {
-                client.BaseAddress = new Uri(config.GetValue<string>("appsettings:DigitalContractApiUrl"));
-
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", config.GetValue<string>("appsettings:DigitalContractToken"));
-            });
+           
 
             services.Configure<SmtpSetting>(config.GetSection(
                                      "smtpsettings"));
