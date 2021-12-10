@@ -52,8 +52,8 @@ namespace KinderlyProcessor.Services
         {
             string dateFrom = DateTime.Today.AddDays(-14).ToString("yyyy-MM-dd");
             string dateTo = DateTime.Now.ToString("yyyy-MM-dd");
-            //string dateFrom = "2021-09-20";
-            //string dateTo = "2021-09-25";
+            //string dateFrom = "2021-09-02";
+            //string dateTo = "2021-09-02";
 
             var client = _httpClientFactory.CreateClient("BluelightApi");
 
@@ -66,8 +66,10 @@ namespace KinderlyProcessor.Services
 
         public async Task<List<Bluelight>> GetContracts()
         {
-            string dateFrom = DateTime.Now.ToString("yyyy-MM-dd");
-            string dateTo = DateTime.Now.ToString("yyyy-MM-dd");
+            //string dateFrom = DateTime.Now.ToString("yyyy-MM-dd");
+            //string dateTo = DateTime.Now.ToString("yyyy-MM-dd");
+            string dateFrom = "2021-12-09";
+            string dateTo = "2021-12-09";
 
             var client = _httpClientFactory.CreateClient("BluelightApi");
 
@@ -75,6 +77,8 @@ namespace KinderlyProcessor.Services
 
             if (!response.IsSuccessStatusCode) return new List<Bluelight>();
             _logger.LogInformation(await response.Content.ReadAsStringAsync());
+
+            
             return await response.Content.ReadFromJsonAsync<List<Bluelight>>();
         }
 

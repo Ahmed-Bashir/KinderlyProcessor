@@ -110,7 +110,7 @@ namespace KinderlyProcessor
             services.AddHttpClient();
             services.AddOptions();
 
-            var appsettings = config.GetRequiredSection("Environment").Value.ToLower().Equals("live") ? "appsettingsLive" : "appsettingsDev";
+            var appsettings = config.GetRequiredSection("Environment").Value.Equals("live") ? "appsettingsLive" : "appsettingsDev";
 
           
 

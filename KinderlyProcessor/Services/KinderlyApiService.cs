@@ -101,7 +101,7 @@ namespace KinderlyProcessor.Services
 
             var result = await response.Content.ReadAsStringAsync();
 
-             _logger.LogInformation(result);
+            // _logger.LogInformation(result);
 
             dynamic KinderlyResponse = JsonConvert.DeserializeObject(jsonResponse);
 
@@ -141,7 +141,7 @@ namespace KinderlyProcessor.Services
 
                         _logger.LogInformation("Kinderly member with Membership Id: {0} and Email: {1} processed succesfully.", membershipId, email);
 
-                        _logger.LogInformation(result);
+                        //_logger.LogInformation(result);
 
                         kinderlyMemberships.Add(kinderlyMember);
                     }
@@ -238,33 +238,11 @@ namespace KinderlyProcessor.Services
                 foreach (var product in contract.order_summary)
                 {
                     if (_applicationSetting.ContainsKey(product.urid))
-                    {
+                    
                         product.urid = _applicationSetting[product.urid];
-                    }
-                    else
-                    {
-                        unrecognisedProducts.Add(product.urid);
-                        continue;
+                    
+                  
 
-                    }
-
-                    if (unrecognisedProducts.Any())
-                    {
-
-                        var item = new
-                        {
-                            contract.email,
-                            contract.first_name,
-                            contract.last_name,
-                            contract.invoice,
-                            products = unrecognisedProducts
-
-
-
-                        };
-
-                        await _emailService.SendUnrecognisedProducts(item);
-                    }
 
                 }
 
@@ -274,6 +252,31 @@ namespace KinderlyProcessor.Services
             }
 
 
+
+            //if (unrecognisedProducts.Any())
+            //{
+
+            //    var item = new
+            //    {
+            //        contract.email,
+            //        contract.first_name,
+            //        contract.last_name,
+            //        contract.invoice,
+            //        products = unrecognisedProducts
+
+
+
+            //    };
+            //    try
+            //    {
+            //        await _emailService.SendUnrecognisedProducts(item);
+
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        _logger.LogError(ex.Message);
+            //    }
+            //}
 
 
 
