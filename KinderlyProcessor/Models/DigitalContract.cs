@@ -10,6 +10,7 @@ namespace KinderlyProcessor.Models
         public string first_name { get; set; }
         public string last_name { get; set; }
         public string invoice { get; set; }
+        public Boolean enable_auth { get; set; } 
         public List<OrderSummary> order_summary { get; set; }
         public string KinderlyIntegrationDate { get; set; } = DateTime.Now.ToString("s");
 

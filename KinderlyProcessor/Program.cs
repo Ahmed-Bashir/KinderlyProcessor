@@ -110,13 +110,16 @@ namespace KinderlyProcessor
             services.AddHttpClient();
             services.AddOptions();
 
-            var appsettings = config.GetRequiredSection("Environment").Value.Equals("live") ? "appsettingsLive" : "appsettingsDev";
+            var appsettings = config.GetRequiredSection("Environment").Value.ToLower();
 
-          
+            appsettings = appsettings.Equals("live") ? "appsettingsLive" : "appsettingsDev";
+
+
 
             services.AddHttpClient("BluelightApi", client =>
             {
                 client.BaseAddress = new Uri(config.GetValue<string>($"{appsettings}:BluelightApiUrl"));
+                
 
                 var authToken = Encoding.ASCII.GetBytes($"{config.GetValue<string>($"{appsettings}:BluelightUserName")}:{config.GetValue<string>($"{appsettings}:BluelightPassword")}");
 

@@ -1,0 +1,986 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "PropertyScraper.Api",
+    "version": "v1"
+  },
+  "paths": {
+    "/onthemarket": {
+      "get": {
+        "tags": [
+          "OnTheMarket"
+        ],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "latest",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PropertyScraper.Api.Daos.OnTheMarket.PropertyDao"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PropertyScraper.Api.Daos.OnTheMarket.PropertyDao"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PropertyScraper.Api.Daos.OnTheMarket.PropertyDao"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/onthemarket/single": {
+      "get": {
+        "tags": [
+          "OnTheMarket"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertyScraper.Api.Daos.OnTheMarket.PropertyDao"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertyScraper.Api.Daos.OnTheMarket.PropertyDao"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertyScraper.Api.Daos.OnTheMarket.PropertyDao"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rightmove": {
+      "get": {
+        "tags": [
+          "Rightmove"
+        ],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "latest",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PropertyScraper.Api.Daos.Rightmove.PropertyDao"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PropertyScraper.Api.Daos.Rightmove.PropertyDao"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PropertyScraper.Api.Daos.Rightmove.PropertyDao"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rightmove/single": {
+      "get": {
+        "tags": [
+          "Rightmove"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertyScraper.Api.Daos.Rightmove.PropertyDao"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertyScraper.Api.Daos.Rightmove.PropertyDao"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertyScraper.Api.Daos.Rightmove.PropertyDao"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/zoopla": {
+      "get": {
+        "tags": [
+          "Zoopla"
+        ],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "latest",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PropertyScraper.Api.Daos.Zoopla.PropertyDao"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PropertyScraper.Api.Daos.Zoopla.PropertyDao"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PropertyScraper.Api.Daos.Zoopla.PropertyDao"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/zoopla/single": {
+      "get": {
+        "tags": [
+          "Zoopla"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertyScraper.Api.Daos.Zoopla.PropertyDao"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertyScraper.Api.Daos.Zoopla.PropertyDao"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertyScraper.Api.Daos.Zoopla.PropertyDao"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PropertyScraper.Api.Daos.OnTheMarket.AgentDao": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "branch": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "link": {
+            "type": "string",
+            "nullable": true
+          },
+          "logo": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PropertyScraper.Api.Daos.OnTheMarket.KeyFeatureDao": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PropertyScraper.Api.Daos.OnTheMarket.PropertyDao": {
+        "type": "object",
+        "properties": {
+          "entityCreated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "entityModified": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "agent": {
+            "$ref": "#/components/schemas/PropertyScraper.Api.Daos.OnTheMarket.AgentDao"
+          },
+          "link": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "bedrooms": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bathrooms": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "geoLocation": {
+            "type": "string",
+            "nullable": true
+          },
+          "postcode": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "newBuild": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "nearestStation": {
+            "type": "string",
+            "nullable": true
+          },
+          "nearestStationDistanceMiles": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "keyFeatures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PropertyScraper.Api.Daos.OnTheMarket.KeyFeatureDao"
+            },
+            "nullable": true
+          },
+          "propertyVersions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PropertyScraper.Api.Daos.OnTheMarket.PropertyVersionDao"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PropertyScraper.Api.Daos.OnTheMarket.PropertyVersionDao": {
+        "type": "object",
+        "properties": {
+          "entityCreated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "versionChanges": {
+            "type": "string",
+            "nullable": true
+          },
+          "auction": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "tenure": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "priceQualifier": {
+            "type": "string",
+            "nullable": true
+          },
+          "chainFree": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "imageCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "videoCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "videoUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "floorPlanCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "floorPlanUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "brochureCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "brochureUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PropertyScraper.Api.Daos.Rightmove.AgentDao": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "company": {
+            "type": "string",
+            "nullable": true
+          },
+          "branch": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "link": {
+            "type": "string",
+            "nullable": true
+          },
+          "logo": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PropertyScraper.Api.Daos.Rightmove.KeyFeatureDao": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PropertyScraper.Api.Daos.Rightmove.PropertyDao": {
+        "type": "object",
+        "properties": {
+          "entityCreated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "entityModified": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "agent": {
+            "$ref": "#/components/schemas/PropertyScraper.Api.Daos.Rightmove.AgentDao"
+          },
+          "link": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "bedrooms": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bathrooms": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "geoLocation": {
+            "type": "string",
+            "nullable": true
+          },
+          "postcode": {
+            "type": "string",
+            "nullable": true
+          },
+          "internetSpeedMegabytePerSec": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "newBuild": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "keyFeatures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PropertyScraper.Api.Daos.Rightmove.KeyFeatureDao"
+            },
+            "nullable": true
+          },
+          "stations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PropertyScraper.Api.Daos.Rightmove.StationDao"
+            },
+            "nullable": true
+          },
+          "propertyVersions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PropertyScraper.Api.Daos.Rightmove.PropertyVersionDao"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PropertyScraper.Api.Daos.Rightmove.PropertyVersionDao": {
+        "type": "object",
+        "properties": {
+          "entityCreated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "published": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "version": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "versionReason": {
+            "type": "string",
+            "nullable": true
+          },
+          "versionChanges": {
+            "type": "string",
+            "nullable": true
+          },
+          "auction": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "tenure": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "priceQualifier": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "videoCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "videoUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "floorPlanCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "floorPlanUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "epcRatingCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "epcRatingUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "brochureCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "brochureUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PropertyScraper.Api.Daos.Rightmove.StationDao": {
+        "type": "object",
+        "properties": {
+          "property": {
+            "$ref": "#/components/schemas/PropertyScraper.Api.Daos.Rightmove.PropertyDao"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "distanceFromProperty": {
+            "type": "number",
+            "format": "double"
+          },
+          "distanceUnit": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PropertyScraper.Api.Daos.Zoopla.AgentDao": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "branch": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "link": {
+            "type": "string",
+            "nullable": true
+          },
+          "logo": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PropertyScraper.Api.Daos.Zoopla.KeyFeatureDao": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PropertyScraper.Api.Daos.Zoopla.PropertyDao": {
+        "type": "object",
+        "properties": {
+          "entityCreated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "entityModified": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "agent": {
+            "$ref": "#/components/schemas/PropertyScraper.Api.Daos.Zoopla.AgentDao"
+          },
+          "link": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "bedrooms": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bathrooms": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "receptions": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "geoLocation": {
+            "type": "string",
+            "nullable": true
+          },
+          "area": {
+            "type": "string",
+            "nullable": true
+          },
+          "postcode": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "newBuild": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "nearestStation": {
+            "type": "string",
+            "nullable": true
+          },
+          "nearestStationDistanceMiles": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "keyFeatures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PropertyScraper.Api.Daos.Zoopla.KeyFeatureDao"
+            },
+            "nullable": true
+          },
+          "propertyVersions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PropertyScraper.Api.Daos.Zoopla.PropertyVersionDao"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PropertyScraper.Api.Daos.Zoopla.PropertyVersionDao": {
+        "type": "object",
+        "properties": {
+          "entityCreated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "published": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "version": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "versionChanges": {
+            "type": "string",
+            "nullable": true
+          },
+          "auction": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "tenure": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "priceMin": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "priceMax": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "priceQualifier": {
+            "type": "string",
+            "nullable": true
+          },
+          "chainFree": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "imageCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "videoCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "videoUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "floorPlanCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "floorPlanUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "epcRatingCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "epcRatingUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "brochureCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "brochureUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "viewCount30Days": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

@@ -156,7 +156,7 @@ namespace KinderlyProcessor.Services
 
                         unApprovedMembers.Add(member);
 
-                        await _emailService.SendUnapprovedMembers(unApprovedMembers);
+                        //await _emailService.SendUnapprovedMembers(unApprovedMembers);
 
                     }
 
@@ -196,19 +196,30 @@ namespace KinderlyProcessor.Services
 
             foreach (var contract in contracts)
             {
+
+
+
                 foreach (var item in contract.Products)
                 {
-                    var orderSummary = new OrderSummary()
+
+                    if (_applicationSetting.ContainsKey(item.Product.Name))
                     {
 
-                        quantity = item.Quantity,
-                        urid = item.Product.Name,
-                        order_ref_id = contract.CmsId
+                        var orderSummary = new OrderSummary()
+                        {
 
-                    };
+                            quantity = item.Quantity,
+                            urid = _applicationSetting[item.Product.Name],
+                            order_ref_id = contract.CmsId
 
-                    orders.Add(orderSummary);
+                        };
+
+                        orders.Add(orderSummary);
+
+                    }
                 }
+
+            
 
 
 
@@ -219,6 +230,7 @@ namespace KinderlyProcessor.Services
                     email = contract.Contact.EmailAddress1,
                     first_name = contract.Contact.FirstName,
                     last_name = contract.Contact.LastName,
+                    enable_auth = true,
                     order_summary = orders
 
 
@@ -233,23 +245,23 @@ namespace KinderlyProcessor.Services
 
 
 
-            foreach (var contract in digitalContracts)
-            {
-                foreach (var product in contract.order_summary)
-                {
-                    if (_applicationSetting.ContainsKey(product.urid))
+            //foreach (var contract in digitalContracts)
+            //{
+            //    foreach (var product in contract.order_summary)
+            //    {
+            //        if (_applicationSetting.ContainsKey(product.urid))
                     
-                        product.urid = _applicationSetting[product.urid];
+            //            product.urid = _applicationSetting[product.urid];
                     
                   
 
 
-                }
+            //    }
 
                 
 
 
-            }
+            
 
 
 
@@ -313,6 +325,7 @@ namespace KinderlyProcessor.Services
             var failedContracts = new List<dynamic>();
 
             if (!digitalContracts.Any()) return;
+           
 
             foreach (var contract in digitalContracts)
             {
@@ -322,36 +335,50 @@ namespace KinderlyProcessor.Services
                     email,
                     contract.first_name,
                     contract.last_name,
+                    contract.enable_auth,
                     contract.order_summary
                 };
 
                 if (IsValid(email))
                 {
                     var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
-                    var response = await client.PostAsync(client.BaseAddress, content);
-                    await _bluelightApiService.PostInvoice(contract.invoice, contract.KinderlyIntegrationDate);
 
-                    _logger.LogInformation("Customer with Email: {0} processed succesfully.", email);
+                  //  var test = JsonConvert.SerializeObject(data).ToString();
+
+                    //Console.WriteLine(test);
+                    var response = await client.PostAsync(client.BaseAddress, content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        await _bluelightApiService.PostInvoice(contract.invoice, contract.KinderlyIntegrationDate);
+
+                        _logger.LogInformation("Customer with Email: {0} processed successfully.", email);
+
+                    }else
+                    {
+                        _logger.LogError("Customer with Email: {0} processed unsuccessfully.", email);
+
+                     
+
+                    }
+
+
                 }
                 else
                 {
-                    _logger.LogError("Customer with Email: {0} processed Unsuccesfully.", email);
-
                     failedContracts.Add(contract);
-
-
-
                 }
+
 
 
                 if (failedContracts.Any())
 
-                    await _emailService.SendFailedContracts(failedContracts);
+                await _emailService.SendFailedContracts(failedContracts);
 
 
 
 
-                // var viewcontent = response.Content.ReadAsStringAsync();
+              
 
 
             }

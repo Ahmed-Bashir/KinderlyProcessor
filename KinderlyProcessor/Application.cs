@@ -13,7 +13,7 @@ namespace KinderlyProcessor
         {
             _kinderlyApiService = kinderlyApiService;
             OnTick(null, EventArgs.Empty);
-            _timer = new Timer(TimeSpan.FromSeconds(60).TotalMilliseconds);
+            _timer = new Timer(TimeSpan.FromMinutes(1).TotalMilliseconds);
             _timer.Elapsed += OnTick;
         }
 
@@ -23,7 +23,7 @@ namespace KinderlyProcessor
 
         private void OnTick(object sender, EventArgs args)
         {
-            //_kinderlyApiService.SendApprovedPaceyMembersAsync().GetAwaiter().GetResult();
+            _kinderlyApiService.SendApprovedPaceyMembersAsync().GetAwaiter().GetResult();
             _kinderlyApiService.ProcessDigitalContractsAsync().GetAwaiter().GetResult();
         }
     }

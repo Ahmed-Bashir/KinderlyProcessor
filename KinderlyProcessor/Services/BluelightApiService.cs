@@ -1,9 +1,11 @@
 ﻿using KinderlyProcessor.Interfaces;
 using KinderlyProcessor.Models;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
@@ -20,6 +22,8 @@ namespace KinderlyProcessor.Services
     {
 
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IConfiguration _config;
+
         private string NewKinderlyMembersEndPoint { get; }
         private string ContactsEndPoint { get; }
         private string InvoiceEndPoint { get; }
@@ -28,7 +32,7 @@ namespace KinderlyProcessor.Services
 
 
 
-        public BluelightApiService(ILogger<IBluelightApiService> logger, IHttpClientFactory httpClientFactory)
+        public BluelightApiService(ILogger<IBluelightApiService> logger, IHttpClientFactory httpClientFactory, IConfiguration config )
         {
             _logger = logger;
 
@@ -41,9 +45,8 @@ namespace KinderlyProcessor.Services
             // End point to send Invoiveapproved by Kinderly
             InvoiceEndPoint = "api/v1/Kinderly/Invoices";
 
-
-
             _httpClientFactory = httpClientFactory;
+            _config = config;
         }
 
 
@@ -52,8 +55,8 @@ namespace KinderlyProcessor.Services
         {
             string dateFrom = DateTime.Today.AddDays(-14).ToString("yyyy-MM-dd");
             string dateTo = DateTime.Now.ToString("yyyy-MM-dd");
-            //string dateFrom = "2021-09-02";
-            //string dateTo = "2021-09-02";
+            //string dateFrom = "2022-01-14";
+            //string dateTo = "2022-01-17";
 
             var client = _httpClientFactory.CreateClient("BluelightApi");
 
@@ -66,14 +69,19 @@ namespace KinderlyProcessor.Services
 
         public async Task<List<Bluelight>> GetContracts()
         {
-            //string dateFrom = DateTime.Now.ToString("yyyy-MM-dd");
-            //string dateTo = DateTime.Now.ToString("yyyy-MM-dd");
-            string dateFrom = "2021-12-09";
-            string dateTo = "2021-12-09";
+            string dateFrom = DateTime.Now.ToString("yyyy-MM-dd");
+            string dateTo = DateTime.Now.ToString("yyyy-MM-dd");
+            //string dateFrom = "2022-01-17";
+            //string dateTo = "2022-01-17";
 
             var client = _httpClientFactory.CreateClient("BluelightApi");
 
-            var response = await client.GetAsync(client.BaseAddress + $"api/v1/Kinderly/Invoices?dateFrom={dateFrom}&dateTo={dateTo}&productCodes=CC1D,WCC1D,NCC1D,STCCD,ASCC1D");
+            var contractNames = _config.GetSection("Products").Get<string[]>();
+
+            var productCodes = string.Join(",", contractNames.Where(s => !string.IsNullOrEmpty(s)));
+
+
+            var response = await client.GetAsync(client.BaseAddress + $"api/v1/Kinderly/Invoices?dateFrom={dateFrom}&dateTo={dateTo}&productCodes={productCodes}");
 
             if (!response.IsSuccessStatusCode) return new List<Bluelight>();
             _logger.LogInformation(await response.Content.ReadAsStringAsync());

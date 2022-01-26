@@ -43,6 +43,7 @@ https://www.blinkingcaret.com/2018/02/14/net-core-console-logging/
 https://stackoverflow.com/questions/55474771/how-to-config-serilog-to-write-to-the-application-directory-with-the-cofig-fil
 
 https://stackoverflow.com/questions/50472009/generating-net-core-console-app-exe-in-visual-studio-2017/50472272
+https://stackoverflow.com/questions/41329108/asp-net-core-get-json-array-using-iconfiguration
 
 
 
@@ -287,3 +288,5 @@ See CompilationErrors for detailed information
 
 
 C:\Users\a.salad\source\Workspaces\Search Childcare Kentico\branches\SC dev branch-V12\searchchildcare\searchchildcare.csproj
+
+
