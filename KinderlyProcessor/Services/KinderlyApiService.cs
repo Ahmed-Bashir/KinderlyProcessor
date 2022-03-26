@@ -51,7 +51,7 @@ namespace KinderlyProcessor.Services
             var kinderlyMemberships = new List<KinderlyMembership>();
 
             //Retrive a list of unapproved Pacey members from Bluelight 
-            var members = await _bluelightApiService.GetMembersAsync();
+            var members =  _bluelightApiService.GetMembersAsync().GetAwaiter().GetResult();
 
 
             if (members.Count == 0)
@@ -350,6 +350,7 @@ namespace KinderlyProcessor.Services
 
                     if (response.IsSuccessStatusCode)
                     {
+                    
                         await _bluelightApiService.PostInvoice(contract.invoice, contract.KinderlyIntegrationDate);
 
                         _logger.LogInformation("Customer with Email: {0} processed successfully.", email);
