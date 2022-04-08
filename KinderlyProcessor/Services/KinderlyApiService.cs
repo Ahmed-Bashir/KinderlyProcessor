@@ -214,6 +214,10 @@ namespace KinderlyProcessor.Services
 
                         };
 
+                        if (item.Product.Name.Equals("Digital Accident Forms"))
+
+                            orderSummary.quantity = orderSummary.quantity * 10;
+
                         orders.Add(orderSummary);
 
                     }
@@ -372,9 +376,9 @@ namespace KinderlyProcessor.Services
 
 
 
-                if (failedContracts.Any())
+                //if (failedContracts.Any())
 
-                await _emailService.SendFailedContracts(failedContracts);
+               // await _emailService.SendFailedContracts(failedContracts);
 
 
 
